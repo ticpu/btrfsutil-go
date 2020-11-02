@@ -1,0 +1,34 @@
+GENERATOR:
+  PackageName: btrfsutil
+  PackageDescription: BTRFS
+  PackageLicense: GPL-2
+  SysIncludes:
+  - "btrfsutil.h"
+  FlagGroups:
+  - {name: "LDFLAGS", flags: ["-lbtrfsutil"]}
+
+PARSER:
+  IncludePaths:
+  - "/usr/include"
+  SourcesPaths:
+  - "btrfsutil.h"
+
+TRANSLATOR:
+  ConstRules:
+    defines: eval
+    enum: eval
+  Rules:
+    global:
+    - {transform: lower}
+    - {action: accept, from: "^btrfs_"}
+    function:
+    - {action: replace, from: "^btrfs_util_", to: "_"}
+    type:
+    - {action: replace, from: "^btrfs_util_", to: "btrfs_"}
+    const:
+    - {action: accept, from: "^BTRFS_"}
+    private:
+    - {transform: unexport}
+    post-global:
+    - {transform: export}
+    - {load: snakecase}
